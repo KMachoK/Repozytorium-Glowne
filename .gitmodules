@@ -7,3 +7,6 @@
 [submodule "source/rozdzial_2/rozdzial_24"]
 	path = source/rozdzial_2/rozdzial_24
 	url = https://github.com/OskarProgrammer/monitorowanie_i_diagnostyka.git
+[submodule "source/rozdzial_2/rozdzial_23"]
+	path = source/rozdzial_2/rozdzial_23
+	url = https://github.com/pawlos1337/Bazy-danych-temat.git
