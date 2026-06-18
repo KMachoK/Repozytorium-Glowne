@@ -2269,8 +2269,268 @@ W rozdziale warto wyraźnie rozróżnić kopie logiczne i fizyczne, bo odpowiada
 \sphinxstepscope
 
 
-\chapter{Zadanie 3}
-\label{\detokenize{rozdzial_3/index:zadanie-3}}\label{\detokenize{rozdzial_3/index::doc}}
+\chapter{Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów}
+\label{\detokenize{rozdzial_3/index:rozdzial-3-dokumentacja-modelu-bazy-danych-wypozyczalni-samochodow}}\label{\detokenize{rozdzial_3/index::doc}}\begin{quote}\begin{description}
+\sphinxlineitem{Autorzy}\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+Olaf Chomicki
+
+\item {} 
+\sphinxAtStartPar
+Konrad Machowski
+
+\item {} 
+\sphinxAtStartPar
+Wiktor Wydrzyński
+
+\end{enumerate}
+
+\end{description}\end{quote}
+
+
+\section{Wybór zagadnienia i opis procesów}
+\label{\detokenize{rozdzial_3/index:wybor-zagadnienia-i-opis-procesow}}
+
+\subsection{Zagadnienie i jego opis}
+\label{\detokenize{rozdzial_3/index:zagadnienie-i-jego-opis}}
+\sphinxAtStartPar
+System zarządzania flotą i wynajmem w wypożyczalni samochodów.
+Projekt obejmuje ewidencję klientów, dostępnych pojazdów z podziałem na kategorie cenowe, a także pełen proces wypożyczeń aut przez klientów, z określeniem czasu wynajmu i statusu operacji.
+
+
+\subsection{Opis procesów}
+\label{\detokenize{rozdzial_3/index:opis-procesow}}
+\sphinxAtStartPar
+Głównym procesem w systemie jest obieg samochodu między wypożyczalnią a klientem.
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Rejestracja klienta:} Klient jest dodawany do bazy, system wymaga podania danych osobowych i kontaktowych. Wymagana jest unikalność numeru PESEL oraz Numeru Prawa Jazdy.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Katalogowanie floty:} Samochody posiadają unikalne numery rejestracyjne i są przypisywane do grup cenowych (Kategorii).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenie:} Rejestracja faktu wynajmu auta, który łączy konkretnego klienta z pojazdem w zdefiniowanym przedziale czasu (od\sphinxhyphen{}do). Proces ten otrzymuje status (np. Zakończone, W\_trakcie, Zarezerwowane).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Więzy integralności:} Usunięcie lub modyfikacja samochodu/klienta powiązanego z rezerwacją musi być kontrolowana przez system (np. poprzez klucze obce), aby zapobiegać niespójności bazy.
+
+\end{itemize}
+
+
+\subsection{Wykaz gromadzonych danych}
+\label{\detokenize{rozdzial_3/index:wykaz-gromadzonych-danych}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Dane klienta:} Imie, Nazwisko, PESEL, Nr\_Prawa\_Jazdy, Telefon, Email.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Dane auta:} Marka, Model, Rok\_Produkcji, Nr\_Rejestracyjny.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Dane kategorii:} Nazwa kategorii, Cena za dzień.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Dane transakcyjne:} Data\_Od, Data\_Do, Status wypożyczenia.
+
+\end{itemize}
+
+
+\section{Prototypowy JSON/CSV}
+\label{\detokenize{rozdzial_3/index:prototypowy-json-csv}}
+\sphinxAtStartPar
+Aby zweryfikować kompletność wprowadzanych danych, przygotowano pliki zawierające próbkowe dane.
+
+
+\subsection{Prototyp CSV}
+\label{\detokenize{rozdzial_3/index:prototyp-csv}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Imie,Nazwisko,PESEL,Nr\PYGZus{}Prawa\PYGZus{}Jazdy,Telefon,Email
+Piotr,Wiśniewski,59081618205,84679/96/1949,+48706147330,piotr.wiśniewski8@email.com
+\end{sphinxVerbatim}
+
+
+\subsection{Prototyp JSON}
+\label{\detokenize{rozdzial_3/index:prototyp-json}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{  }\PYG{n+nt}{\PYGZdq{}klienci\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{p}{[}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}Imie\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Piotr\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}Nazwisko\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Wiśniewski\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}PESEL\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}59081618205\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}Nr\PYGZus{}Prawa\PYGZus{}Jazdy\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}84679/96/1949\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}Telefon\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}+48706147330\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{      }\PYG{n+nt}{\PYGZdq{}Email\PYGZdq{}}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}piotr.wiśniewski8@email.com\PYGZdq{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{  }\PYG{p}{]}
+\PYG{p}{\PYGZcb{}}
+\end{sphinxVerbatim}
+
+
+\section{Model koncepcyjny bazy danych}
+\label{\detokenize{rozdzial_3/index:model-koncepcyjny-bazy-danych}}
+
+\subsection{Zidentyfikowane encje}
+\label{\detokenize{rozdzial_3/index:zidentyfikowane-encje}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klient}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochód}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategoria}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenie}
+
+\end{itemize}
+
+
+\subsection{Zdefiniowane atrybuty}
+\label{\detokenize{rozdzial_3/index:zdefiniowane-atrybuty}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klient:} Imie, Nazwisko, PESEL, Nr\_Prawa\_Jazdy, Telefon, Email
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochód:} Marka, Model, Rok\_Produkcji, Nr\_Rejestracyjny
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategoria:} Nazwa, Cena\_Za\_Dzien
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenie:} Data\_Od, Data\_Do, Status
+
+\end{itemize}
+
+
+\subsection{Opis związków}
+\label{\detokenize{rozdzial_3/index:opis-zwiazkow}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategoria \textendash{} Samochód (1:N):} Do jednej kategorii może być przypisanych wiele samochodów, ale samochód należy tylko do jednej kategorii.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klient \textendash{} Wypożyczenie (1:N):} Pojedynczy klient ma możliwość wypożyczania aut wielokrotnie.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochód \textendash{} Wypożyczenie (1:N):} Samochód może być w historii swojej eksploatacji wypożyczony przez wielu różnych klientów.
+
+\end{itemize}
+
+
+\subsection{Identyfikacja encji słabych}
+\label{\detokenize{rozdzial_3/index:identyfikacja-encji-slabych}}
+\sphinxAtStartPar
+Ze względu na występowanie relacji wiele\sphinxhyphen{}do\sphinxhyphen{}wielu (M:N) pomiędzy encjami \sphinxcode{\sphinxupquote{Klient}} i \sphinxcode{\sphinxupquote{Samochód}}, utworzono encję asocjacyjną (słabą) o nazwie \sphinxstylestrong{Wypożyczenia}. Rozwiązuje ona pułapkę połączeń (wiatrak) i ewidencjonuje każdą transakcję.
+
+
+\subsection{Model w notacji Chena}
+\label{\detokenize{rozdzial_3/index:model-w-notacji-chena}}
+
+\section{Model logiczny i proces normalizacji}
+\label{\detokenize{rozdzial_3/index:model-logiczny-i-proces-normalizacji}}
+
+\subsection{Proces normalizacji}
+\label{\detokenize{rozdzial_3/index:proces-normalizacji}}
+\sphinxAtStartPar
+Zastosowano proces normalizacji, doprowadzając relacje do 3 Postaci Normalnej (3NF). Każda tabela posiada klucz główny (PK). Aby uniknąć redundancji i anomalii modyfikacji, atrybuty określające stawkę cenową przeniesiono do słownikowej tabeli \sphinxcode{\sphinxupquote{Kategorie}}. Utworzono relacyjne klucze obce (FK), gwarantujące integralność referencyjną.
+
+
+\subsection{Ostateczna struktura tabel (3NF)}
+\label{\detokenize{rozdzial_3/index:ostateczna-struktura-tabel-3nf}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategorie:} ID\_Kategorii (PK), Nazwa, Cena\_Za\_Dzien
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klienci:} ID\_Klienta (PK), Imie, Nazwisko, PESEL, Nr\_Prawa\_Jazdy, Telefon, Email
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochody:} ID\_Samochodu (PK), ID\_Kategorii (FK), Marka, Model, Nr\_Rejestracyjny, Rok\_Produkcji
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenia:} ID\_Wypozyczenia (PK), ID\_Klienta (FK), ID\_Samochodu (FK), Data\_Od, Data\_Do, Status
+
+\end{itemize}
+
+
+\subsection{Schemat ERD w notacji Barkera}
+\label{\detokenize{rozdzial_3/index:schemat-erd-w-notacji-barkera}}
+
+\section{Model fizyczny bazy danych}
+\label{\detokenize{rozdzial_3/index:model-fizyczny-bazy-danych}}
+
+\subsection{Model fizyczny dla środowiska SQLite}
+\label{\detokenize{rozdzial_3/index:model-fizyczny-dla-srodowiska-sqlite}}
+\sphinxAtStartPar
+SQLite korzysta z podstawowych typów \sphinxcode{\sphinxupquote{TEXT}}, \sphinxcode{\sphinxupquote{INTEGER}} i \sphinxcode{\sphinxupquote{REAL}}. Brak natywnych typów daty wymaga zapisywania ich jako ciągi znaków (\sphinxcode{\sphinxupquote{TEXT}}). Do kluczy głównych zastosowano automatyczną sekwencję \sphinxcode{\sphinxupquote{INTEGER PRIMARY KEY}}.
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategorie:} ID\_Kategorii : INTEGER PRIMARY KEY, Nazwa : TEXT, Cena\_Za\_Dzien : REAL
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klienci:} ID\_Klienta : INTEGER PRIMARY KEY, Imie : TEXT, Nazwisko : TEXT, PESEL : TEXT UNIQUE, Nr\_Prawa\_Jazdy : TEXT UNIQUE, Telefon : TEXT, Email : TEXT
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochody:} ID\_Samochodu : INTEGER PRIMARY KEY, Marka : TEXT, Model : TEXT, Nr\_Rejestracyjny : TEXT UNIQUE, Rok\_Produkcji : INTEGER, ID\_Kategorii : INTEGER REFERENCES Kategorie
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenia:} ID\_Wypozyczenia : INTEGER PRIMARY KEY, ID\_Klienta : INTEGER REFERENCES Klienci, ID\_Samochodu : INTEGER REFERENCES Samochody, Data\_Od : TEXT, Data\_Do : TEXT, Status : TEXT
+
+\end{itemize}
+
+
+\subsection{Model fizyczny dla środowiska PostgreSQL}
+\label{\detokenize{rozdzial_3/index:model-fizyczny-dla-srodowiska-postgresql}}
+\sphinxAtStartPar
+Baza PostgreSQL umożliwiła implementację ścisłych typów natywnych, optymalizujących miejsce i wydajność silnika z wykorzystaniem \sphinxcode{\sphinxupquote{VARCHAR}}, \sphinxcode{\sphinxupquote{DATE}} i formatowania liczbowego \sphinxcode{\sphinxupquote{NUMERIC}}. Zastosowano typ \sphinxcode{\sphinxupquote{SERIAL}} do obsługi sekwencji kluczy głównych.
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Kategorie:} ID\_Kategorii : SERIAL PRIMARY KEY, Nazwa : VARCHAR(50), Cena\_Za\_Dzien : NUMERIC(10,2)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Klienci:} ID\_Klienta : SERIAL PRIMARY KEY, Imie : VARCHAR(50), Nazwisko : VARCHAR(50), PESEL : VARCHAR(11) UNIQUE, Nr\_Prawa\_Jazdy : VARCHAR(20) UNIQUE, Telefon : VARCHAR(15), Email : VARCHAR(100)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Samochody:} ID\_Samochodu : SERIAL PRIMARY KEY, Marka : VARCHAR(50), Model : VARCHAR(50), Nr\_Rejestracyjny : VARCHAR(20) UNIQUE, Rok\_Produkcji : INT, ID\_Kategorii : INT REFERENCES Kategorie
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Wypożyczenia:} ID\_Wypozyczenia : SERIAL PRIMARY KEY, ID\_Klienta : INT REFERENCES Klienci, ID\_Samochodu : INT REFERENCES Samochody, Data\_Od : DATE, Data\_Do : DATE, Status : VARCHAR(20)
+
+\end{itemize}
+
 \sphinxstepscope
 
 

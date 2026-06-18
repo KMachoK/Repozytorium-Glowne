@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Zadanie 3 &#8212; Sprawozdanie-z-laboratoriów  documentation</title>
+    <title>Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów &#8212; Sprawozdanie-z-laboratoriów  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
@@ -33,8 +33,150 @@
 
           <div class="body" role="main">
             
-  <section id="zadanie-3">
-<h1>Zadanie 3<a class="headerlink" href="#zadanie-3" title="Link to this heading">¶</a></h1>
+  <section id="rozdzial-3-dokumentacja-modelu-bazy-danych-wypozyczalni-samochodow">
+<h1>Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów<a class="headerlink" href="#rozdzial-3-dokumentacja-modelu-bazy-danych-wypozyczalni-samochodow" title="Link to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Autorzy<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>Olaf Chomicki</p></li>
+<li><p>Konrad Machowski</p></li>
+<li><p>Wiktor Wydrzyński</p></li>
+</ol>
+</dd>
+</dl>
+<section id="wybor-zagadnienia-i-opis-procesow">
+<h2>Wybór zagadnienia i opis procesów<a class="headerlink" href="#wybor-zagadnienia-i-opis-procesow" title="Link to this heading">¶</a></h2>
+<section id="zagadnienie-i-jego-opis">
+<h3>Zagadnienie i jego opis<a class="headerlink" href="#zagadnienie-i-jego-opis" title="Link to this heading">¶</a></h3>
+<p>System zarządzania flotą i wynajmem w wypożyczalni samochodów.
+Projekt obejmuje ewidencję klientów, dostępnych pojazdów z podziałem na kategorie cenowe, a także pełen proces wypożyczeń aut przez klientów, z określeniem czasu wynajmu i statusu operacji.</p>
+</section>
+<section id="opis-procesow">
+<h3>Opis procesów<a class="headerlink" href="#opis-procesow" title="Link to this heading">¶</a></h3>
+<p>Głównym procesem w systemie jest obieg samochodu między wypożyczalnią a klientem.</p>
+<ul class="simple">
+<li><p><strong>Rejestracja klienta:</strong> Klient jest dodawany do bazy, system wymaga podania danych osobowych i kontaktowych. Wymagana jest unikalność numeru PESEL oraz Numeru Prawa Jazdy.</p></li>
+<li><p><strong>Katalogowanie floty:</strong> Samochody posiadają unikalne numery rejestracyjne i są przypisywane do grup cenowych (Kategorii).</p></li>
+<li><p><strong>Wypożyczenie:</strong> Rejestracja faktu wynajmu auta, który łączy konkretnego klienta z pojazdem w zdefiniowanym przedziale czasu (od-do). Proces ten otrzymuje status (np. Zakończone, W_trakcie, Zarezerwowane).</p></li>
+<li><p><strong>Więzy integralności:</strong> Usunięcie lub modyfikacja samochodu/klienta powiązanego z rezerwacją musi być kontrolowana przez system (np. poprzez klucze obce), aby zapobiegać niespójności bazy.</p></li>
+</ul>
+</section>
+<section id="wykaz-gromadzonych-danych">
+<h3>Wykaz gromadzonych danych<a class="headerlink" href="#wykaz-gromadzonych-danych" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Dane klienta:</strong> Imie, Nazwisko, PESEL, Nr_Prawa_Jazdy, Telefon, Email.</p></li>
+<li><p><strong>Dane auta:</strong> Marka, Model, Rok_Produkcji, Nr_Rejestracyjny.</p></li>
+<li><p><strong>Dane kategorii:</strong> Nazwa kategorii, Cena za dzień.</p></li>
+<li><p><strong>Dane transakcyjne:</strong> Data_Od, Data_Do, Status wypożyczenia.</p></li>
+</ul>
+</section>
+</section>
+<section id="prototypowy-json-csv">
+<h2>Prototypowy JSON/CSV<a class="headerlink" href="#prototypowy-json-csv" title="Link to this heading">¶</a></h2>
+<p>Aby zweryfikować kompletność wprowadzanych danych, przygotowano pliki zawierające próbkowe dane.</p>
+<section id="prototyp-csv">
+<h3>Prototyp CSV<a class="headerlink" href="#prototyp-csv" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Imie,Nazwisko,PESEL,Nr_Prawa_Jazdy,Telefon,Email
+Piotr,Wiśniewski,59081618205,84679/96/1949,+48706147330,piotr.wiśniewski8@email.com
+</pre></div>
+</div>
+</section>
+<section id="prototyp-json">
+<h3>Prototyp JSON<a class="headerlink" href="#prototyp-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;klienci&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Imie&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Piotr&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Nazwisko&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Wiśniewski&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;PESEL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;59081618205&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Nr_Prawa_Jazdy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;84679/96/1949&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Telefon&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+48706147330&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;piotr.wiśniewski8@email.com&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="model-koncepcyjny-bazy-danych">
+<h2>Model koncepcyjny bazy danych<a class="headerlink" href="#model-koncepcyjny-bazy-danych" title="Link to this heading">¶</a></h2>
+<section id="zidentyfikowane-encje">
+<h3>Zidentyfikowane encje<a class="headerlink" href="#zidentyfikowane-encje" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Klient</strong></p></li>
+<li><p><strong>Samochód</strong></p></li>
+<li><p><strong>Kategoria</strong></p></li>
+<li><p><strong>Wypożyczenie</strong></p></li>
+</ul>
+</section>
+<section id="zdefiniowane-atrybuty">
+<h3>Zdefiniowane atrybuty<a class="headerlink" href="#zdefiniowane-atrybuty" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Klient:</strong> Imie, Nazwisko, PESEL, Nr_Prawa_Jazdy, Telefon, Email</p></li>
+<li><p><strong>Samochód:</strong> Marka, Model, Rok_Produkcji, Nr_Rejestracyjny</p></li>
+<li><p><strong>Kategoria:</strong> Nazwa, Cena_Za_Dzien</p></li>
+<li><p><strong>Wypożyczenie:</strong> Data_Od, Data_Do, Status</p></li>
+</ul>
+</section>
+<section id="opis-zwiazkow">
+<h3>Opis związków<a class="headerlink" href="#opis-zwiazkow" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Kategoria – Samochód (1:N):</strong> Do jednej kategorii może być przypisanych wiele samochodów, ale samochód należy tylko do jednej kategorii.</p></li>
+<li><p><strong>Klient – Wypożyczenie (1:N):</strong> Pojedynczy klient ma możliwość wypożyczania aut wielokrotnie.</p></li>
+<li><p><strong>Samochód – Wypożyczenie (1:N):</strong> Samochód może być w historii swojej eksploatacji wypożyczony przez wielu różnych klientów.</p></li>
+</ul>
+</section>
+<section id="identyfikacja-encji-slabych">
+<h3>Identyfikacja encji słabych<a class="headerlink" href="#identyfikacja-encji-slabych" title="Link to this heading">¶</a></h3>
+<p>Ze względu na występowanie relacji wiele-do-wielu (M:N) pomiędzy encjami <code class="docutils literal notranslate"><span class="pre">Klient</span></code> i <code class="docutils literal notranslate"><span class="pre">Samochód</span></code>, utworzono encję asocjacyjną (słabą) o nazwie <strong>Wypożyczenia</strong>. Rozwiązuje ona pułapkę połączeń (wiatrak) i ewidencjonuje każdą transakcję.</p>
+</section>
+<section id="model-w-notacji-chena">
+<h3>Model w notacji Chena<a class="headerlink" href="#model-w-notacji-chena" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="model-logiczny-i-proces-normalizacji">
+<h2>Model logiczny i proces normalizacji<a class="headerlink" href="#model-logiczny-i-proces-normalizacji" title="Link to this heading">¶</a></h2>
+<section id="proces-normalizacji">
+<h3>Proces normalizacji<a class="headerlink" href="#proces-normalizacji" title="Link to this heading">¶</a></h3>
+<p>Zastosowano proces normalizacji, doprowadzając relacje do 3 Postaci Normalnej (3NF). Każda tabela posiada klucz główny (PK). Aby uniknąć redundancji i anomalii modyfikacji, atrybuty określające stawkę cenową przeniesiono do słownikowej tabeli <code class="docutils literal notranslate"><span class="pre">Kategorie</span></code>. Utworzono relacyjne klucze obce (FK), gwarantujące integralność referencyjną.</p>
+</section>
+<section id="ostateczna-struktura-tabel-3nf">
+<h3>Ostateczna struktura tabel (3NF)<a class="headerlink" href="#ostateczna-struktura-tabel-3nf" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Kategorie:</strong> ID_Kategorii (PK), Nazwa, Cena_Za_Dzien</p></li>
+<li><p><strong>Klienci:</strong> ID_Klienta (PK), Imie, Nazwisko, PESEL, Nr_Prawa_Jazdy, Telefon, Email</p></li>
+<li><p><strong>Samochody:</strong> ID_Samochodu (PK), ID_Kategorii (FK), Marka, Model, Nr_Rejestracyjny, Rok_Produkcji</p></li>
+<li><p><strong>Wypożyczenia:</strong> ID_Wypozyczenia (PK), ID_Klienta (FK), ID_Samochodu (FK), Data_Od, Data_Do, Status</p></li>
+</ul>
+</section>
+<section id="schemat-erd-w-notacji-barkera">
+<h3>Schemat ERD w notacji Barkera<a class="headerlink" href="#schemat-erd-w-notacji-barkera" title="Link to this heading">¶</a></h3>
+</section>
+</section>
+<section id="model-fizyczny-bazy-danych">
+<h2>Model fizyczny bazy danych<a class="headerlink" href="#model-fizyczny-bazy-danych" title="Link to this heading">¶</a></h2>
+<section id="model-fizyczny-dla-srodowiska-sqlite">
+<h3>Model fizyczny dla środowiska SQLite<a class="headerlink" href="#model-fizyczny-dla-srodowiska-sqlite" title="Link to this heading">¶</a></h3>
+<p>SQLite korzysta z podstawowych typów <code class="docutils literal notranslate"><span class="pre">TEXT</span></code>, <code class="docutils literal notranslate"><span class="pre">INTEGER</span></code> i <code class="docutils literal notranslate"><span class="pre">REAL</span></code>. Brak natywnych typów daty wymaga zapisywania ich jako ciągi znaków (<code class="docutils literal notranslate"><span class="pre">TEXT</span></code>). Do kluczy głównych zastosowano automatyczną sekwencję <code class="docutils literal notranslate"><span class="pre">INTEGER</span> <span class="pre">PRIMARY</span> <span class="pre">KEY</span></code>.</p>
+<ul class="simple">
+<li><p><strong>Kategorie:</strong> ID_Kategorii : INTEGER PRIMARY KEY, Nazwa : TEXT, Cena_Za_Dzien : REAL</p></li>
+<li><p><strong>Klienci:</strong> ID_Klienta : INTEGER PRIMARY KEY, Imie : TEXT, Nazwisko : TEXT, PESEL : TEXT UNIQUE, Nr_Prawa_Jazdy : TEXT UNIQUE, Telefon : TEXT, Email : TEXT</p></li>
+<li><p><strong>Samochody:</strong> ID_Samochodu : INTEGER PRIMARY KEY, Marka : TEXT, Model : TEXT, Nr_Rejestracyjny : TEXT UNIQUE, Rok_Produkcji : INTEGER, ID_Kategorii : INTEGER REFERENCES Kategorie</p></li>
+<li><p><strong>Wypożyczenia:</strong> ID_Wypozyczenia : INTEGER PRIMARY KEY, ID_Klienta : INTEGER REFERENCES Klienci, ID_Samochodu : INTEGER REFERENCES Samochody, Data_Od : TEXT, Data_Do : TEXT, Status : TEXT</p></li>
+</ul>
+</section>
+<section id="model-fizyczny-dla-srodowiska-postgresql">
+<h3>Model fizyczny dla środowiska PostgreSQL<a class="headerlink" href="#model-fizyczny-dla-srodowiska-postgresql" title="Link to this heading">¶</a></h3>
+<p>Baza PostgreSQL umożliwiła implementację ścisłych typów natywnych, optymalizujących miejsce i wydajność silnika z wykorzystaniem <code class="docutils literal notranslate"><span class="pre">VARCHAR</span></code>, <code class="docutils literal notranslate"><span class="pre">DATE</span></code> i formatowania liczbowego <code class="docutils literal notranslate"><span class="pre">NUMERIC</span></code>. Zastosowano typ <code class="docutils literal notranslate"><span class="pre">SERIAL</span></code> do obsługi sekwencji kluczy głównych.</p>
+<ul class="simple">
+<li><p><strong>Kategorie:</strong> ID_Kategorii : SERIAL PRIMARY KEY, Nazwa : VARCHAR(50), Cena_Za_Dzien : NUMERIC(10,2)</p></li>
+<li><p><strong>Klienci:</strong> ID_Klienta : SERIAL PRIMARY KEY, Imie : VARCHAR(50), Nazwisko : VARCHAR(50), PESEL : VARCHAR(11) UNIQUE, Nr_Prawa_Jazdy : VARCHAR(20) UNIQUE, Telefon : VARCHAR(15), Email : VARCHAR(100)</p></li>
+<li><p><strong>Samochody:</strong> ID_Samochodu : SERIAL PRIMARY KEY, Marka : VARCHAR(50), Model : VARCHAR(50), Nr_Rejestracyjny : VARCHAR(20) UNIQUE, Rok_Produkcji : INT, ID_Kategorii : INT REFERENCES Kategorie</p></li>
+<li><p><strong>Wypożyczenia:</strong> ID_Wypozyczenia : SERIAL PRIMARY KEY, ID_Klienta : INT REFERENCES Klienci, ID_Samochodu : INT REFERENCES Samochody, Data_Od : DATE, Data_Do : DATE, Status : VARCHAR(20)</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -67,7 +209,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_1/index.html">Wstęp do sprawozdania oraz linki</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_2/index.html">Badania literaturowe</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Zadanie 3</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_4/index.html">Implementacja bazy danych i import danych</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_5/index.html">Zadanie 5</a></li>
 </ul>
