@@ -1,5 +1,5 @@
 ====================================================================
-Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów
+Dokumentacja modelu bazy danych wypożyczalni samochodów
 ====================================================================
 :Autorzy:
     1. Olaf Chomicki

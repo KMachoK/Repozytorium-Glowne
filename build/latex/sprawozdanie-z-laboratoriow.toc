@@ -102,7 +102,7 @@
 \contentsline {subsubsection}{PITR i odzyskiwanie stanu sprzed błędu}{28}{subsubsection*.51}%
 \contentsline {subsection}{\numberline {2.8.5}Dedykowane oprogramowanie i skrypty zewnętrzne do automatyzacji}{28}{subsection.2.8.5}%
 \contentsline {subsection}{\numberline {2.8.6}Podsumowanie}{28}{subsection.2.8.6}%
-\contentsline {chapter}{\numberline {3}Rozdział 3. Dokumentacja modelu bazy danych wypożyczalni samochodów}{29}{chapter.3}%
+\contentsline {chapter}{\numberline {3}Dokumentacja modelu bazy danych wypożyczalni samochodów}{29}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Wybór zagadnienia i opis procesów}{29}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Zagadnienie i jego opis}{29}{subsection.3.1.1}%
 \contentsline {subsection}{\numberline {3.1.2}Opis procesów}{29}{subsection.3.1.2}%
