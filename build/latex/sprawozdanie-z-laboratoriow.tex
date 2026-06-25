@@ -624,9 +624,6 @@ W silniku SQLite wykorzystano z kolei grupowanie instrukcji poprzez metodę \sph
 
 \chapter{Zapytania do bazy danych}
 \label{\detokenize{rozdzial_5/index:zapytania-do-bazy-danych}}\label{\detokenize{rozdzial_5/index::doc}}
-
-\section{Wprowadzenie}
-\label{\detokenize{rozdzial_5/index:wprowadzenie}}
 \sphinxAtStartPar
 W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych.
 
@@ -644,10 +641,10 @@ Aby system w pełni odpowiadał na potrzeby analityczne, w kodzie Pythona wdroż
 \label{\detokenize{rozdzial_5/index:selekcja-danych-i-funkcje-wierszowe}}
 \sphinxAtStartPar
 Pierwsze z zapytań wykorzystuje klauzulę \sphinxcode{\sphinxupquote{WHERE}} do filtrowania rekordów po statusie transakcji oraz implementuje wierszowe operacje arytmetyczne na typach dat (natywnie zwracające typ \sphinxcode{\sphinxupquote{integer}} w PostgreSQL).
-\index{built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}!pobierz\_czas\_wypozyczen()@\spxentry{pobierz\_czas\_wypozyczen()}}\index{pobierz\_czas\_wypozyczen()@\spxentry{pobierz\_czas\_wypozyczen()}!built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}}
+
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{rozdzial_5/index:pobierz_czas_wypozyczen}}
+
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{pobierz\_czas\_wypozyczen}}}
@@ -678,10 +675,10 @@ Lista krotek: (ID wypożyczenia, złączona nazwa auta, wyliczona liczba dni).
 \label{\detokenize{rozdzial_5/index:funkcje-agregujace-i-grupowanie}}
 \sphinxAtStartPar
 Do generowania metryk biznesowych wykorzystano funkcje agregujące, operujące na zgrupowanych wierszach dla poszczególnych osi wymiarów.
-\index{built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}!raport\_przychodow\_kategorii()@\spxentry{raport\_przychodow\_kategorii()}}\index{raport\_przychodow\_kategorii()@\spxentry{raport\_przychodow\_kategorii()}!built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}}
+
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{rozdzial_5/index:raport_przychodow_kategorii}}
+
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{raport\_przychodow\_kategorii}}}
@@ -712,10 +709,10 @@ Lista krotek: (Nazwa kategorii, liczba wypożyczeń, łączny przychód).
 \label{\detokenize{rozdzial_5/index:polaczenia-asymetryczne-left-join}}
 \sphinxAtStartPar
 W relacyjnych systemach analitycznych niezbędne bywa zachowanie informacji o encjach sierocych (nieposiadających powiązań w tabelach zależnych).
-\index{built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}!sprawdz\_historie\_aut()@\spxentry{sprawdz\_historie\_aut()}}\index{sprawdz\_historie\_aut()@\spxentry{sprawdz\_historie\_aut()}!built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}}
+
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{rozdzial_5/index:sprawdz_historie_aut}}
+
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{sprawdz\_historie\_aut}}}
@@ -746,10 +743,10 @@ Lista krotek z danymi pojazdu oraz opcjonalną datą wypożyczenia.
 \label{\detokenize{rozdzial_5/index:operatory-zbiorowe-roznica}}
 \sphinxAtStartPar
 Część logiki oparto o matematyczną algebrę relacyjną zamiast tradycyjnych złączeń warunkowych, co ułatwia zarządzanie inwentarzem w czasie rzeczywistym.
-\index{built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}!dostepne\_samochody()@\spxentry{dostepne\_samochody()}}\index{dostepne\_samochody()@\spxentry{dostepne\_samochody()}!built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}}
+
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{rozdzial_5/index:dostepne_samochody}}
+
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{dostepne\_samochody}}}
@@ -780,10 +777,10 @@ Lista krotek identyfikujących dostępne samochody.
 \label{\detokenize{rozdzial_5/index:zagniezdzone-podzapytania-subqueries}}
 \sphinxAtStartPar
 Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie podrzędne bezpośrednio do predykatu kwerendy nadrzędnej.
-\index{built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}!klienci\_najdrozszych\_aut()@\spxentry{klienci\_najdrozszych\_aut()}}\index{klienci\_najdrozszych\_aut()@\spxentry{klienci\_najdrozszych\_aut()}!built\sphinxhyphen{}in function@\spxentry{built\sphinxhyphen{}in function}}
+
 
 \begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{rozdzial_5/index:klienci_najdrozszych_aut}}
+
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{klienci\_najdrozszych\_aut}}}
@@ -813,10 +810,7 @@ Zbiór krotek (imię, nazwisko, email, telefon).
 \section{Implementacja skryptowa}
 \label{\detokenize{rozdzial_5/index:implementacja-skryptowa}}
 \sphinxAtStartPar
-Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji JupyterLaba. Moduł zachowuje natywną zgodność biblioteczną z architekturą środowiska uruchomieniowego wdrożonego na serwerze Linux.
-
-\sphinxAtStartPar
-Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący prawidłowy wzorzec komunikacji za pomocą mechanizmu kursorów biblioteki obsługującej bazę.
+Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import} \PYG{n+nn}{psycopg}
@@ -837,8 +831,6 @@ Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący 
     \PYG{n}{wyniki} \PYG{o}{=} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
     \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
     \PYG{k}{return} \PYG{n}{wyniki}
-
-\PYG{c+c1}{\PYGZsh{} Poniżej znajduje się implementacja pozostałych funkcji...}
 \end{sphinxVerbatim}
 
 

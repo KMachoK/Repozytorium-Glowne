@@ -375,7 +375,6 @@ INPUT ./sprawozdanie-z-laboratoriow.out
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qhvb.pfb
-INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qhvr.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qtmb.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qtmri.pfb

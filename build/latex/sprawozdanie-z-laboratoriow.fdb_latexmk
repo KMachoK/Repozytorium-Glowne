@@ -1,11 +1,11 @@
 # Fdb version 4
-["makeindex sprawozdanie-z-laboratoriow.idx"] 1782377211.22943 "sprawozdanie-z-laboratoriow.idx" "sprawozdanie-z-laboratoriow.ind" "sprawozdanie-z-laboratoriow" 1782377212.84667 0
-  "sprawozdanie-z-laboratoriow.idx" 1782377212.77661 1674 66f1b4944ccaf210d16043f1405ab000 "pdflatex"
+["makeindex sprawozdanie-z-laboratoriow.idx"] 1782378184.72704 "sprawozdanie-z-laboratoriow.idx" "sprawozdanie-z-laboratoriow.ind" "sprawozdanie-z-laboratoriow" 1782378186.33111 0
+  "sprawozdanie-z-laboratoriow.idx" 1782378185.98894 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "sprawozdanie-z-laboratoriow.ilg"
   "sprawozdanie-z-laboratoriow.ind"
   (rewritten before read)
-["pdflatex"] 1782377212.08618 "sprawozdanie-z-laboratoriow.tex" "sprawozdanie-z-laboratoriow.pdf" "sprawozdanie-z-laboratoriow" 1782377212.84679 0
+["pdflatex"] 1782378185.5707 "sprawozdanie-z-laboratoriow.tex" "sprawozdanie-z-laboratoriow.pdf" "sprawozdanie-z-laboratoriow" 1782378186.33123 0
   "/etc/texmf/web2c/texmf.cnf" 1772394163.08845 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecrm1095.tfm" 1136768653 3584 929cdff2b7a8c11bd4d49fd68cb0ae70 ""
@@ -153,7 +153,6 @@
   "/usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmri.tfm" 1480098718 11356 da1519f442d8a49b81c86cbaf25ef79f ""
   "/usr/share/texmf/fonts/tfm/public/tex-gyre/ts1-qtmr.tfm" 1480098718 1600 20cdf11dab97d5d39e847571f9314407 ""
   "/usr/share/texmf/fonts/type1/public/tex-gyre/qhvb.pfb" 1480098745 112164 176018dd42fcc60204173fa10e357da5 ""
-  "/usr/share/texmf/fonts/type1/public/tex-gyre/qhvr.pfb" 1480098745 110045 c159829aa6d7d99f1777bb40c90b8157 ""
   "/usr/share/texmf/fonts/type1/public/tex-gyre/qtmb.pfb" 1480098745 131776 4be3e220f990dc716f91bb7965c09237 ""
   "/usr/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb" 1480098745 133302 8dca243a80ecf4cfe00077d4bd995bd7 ""
   "/usr/share/texmf/fonts/type1/public/tex-gyre/qtmri.pfb" 1480098745 129669 aaf12ebd0b807d452087fc34bde5bd7d ""
@@ -166,7 +165,7 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1772394229 5467976 4e327e9486ffc2322d6b6e1f3375f9fb ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1772394241 3351489 7d1a0305bdfe00388716e5c7fb175e02 ""
   "sphinx.sty" 1738319295 54119 967a674353157928503df7cae9b6165e ""
-  "sphinxhighlight.sty" 1782377210.18458 7553 83fb52292c17957d9f4aadcb28c57a87 ""
+  "sphinxhighlight.sty" 1782378183.80491 7553 83fb52292c17957d9f4aadcb28c57a87 ""
   "sphinxlatexadmonitions.sty" 1738319295 19110 2855832b1a32f04033523b9919260ac9 ""
   "sphinxlatexcontainers.sty" 1738319295 900 d61f923db071a7b54d3cee8a1e6935d3 ""
   "sphinxlatexgraphics.sty" 1738319295 4918 c9266041d02bc615d54b890e96e3acd3 ""
@@ -181,16 +180,16 @@
   "sphinxlatexstyletext.sty" 1738319295 6759 9e932c65374cfb62686485d331bc975c ""
   "sphinxlatextables.sty" 1738319295 57643 7f1013c2fa11942370d867527bdda568 ""
   "sphinxmanual.cls" 1738319295 4241 7b0d7a37df7b5715fb0dbd585c52ecdb ""
-  "sphinxmessages.sty" 1782377210.26458 745 3f5fcd6cdd7964ed608767954a8ced6f ""
+  "sphinxmessages.sty" 1782378183.86891 745 3f5fcd6cdd7964ed608767954a8ced6f ""
   "sphinxoptionsgeometry.sty" 1738319295 2060 6c27b3eba37bde592ae8908ab2c1ac0f ""
   "sphinxoptionshyperref.sty" 1738319295 1093 e468489bae7631a7f387b4b0f7bc15d4 ""
   "sphinxpackageboxes.sty" 1738319295 36106 1be2053eb1cb9b083b3a75e3657bcb24 ""
   "sphinxpackagefootnote.sty" 1738319295 15330 2fb656b6ce8cd1f6aba2d1c508fb51e5 ""
-  "sprawozdanie-z-laboratoriow.aux" 1782377212.77661 12915 428a7fa8de450b495828871f6ad9eb39 "pdflatex"
-  "sprawozdanie-z-laboratoriow.ind" 1782377211.30859 1346 6ab4fb5fe2e11d91e8fdb563f5c7bda9 "makeindex sprawozdanie-z-laboratoriow.idx"
-  "sprawozdanie-z-laboratoriow.out" 1782377212.77661 9298 b94b218d240a4761375c04bb113af1e5 "pdflatex"
-  "sprawozdanie-z-laboratoriow.tex" 1782377210.26458 42308 29fdfe43fa9cddab9a6731ee0051b02c ""
-  "sprawozdanie-z-laboratoriow.toc" 1782377212.77661 4230 4a3b0ab20215d4e3ab5d57543c03cedd "pdflatex"
+  "sprawozdanie-z-laboratoriow.aux" 1782378186.26094 12055 7012b63af5690bd10aadf7976d3e4421 "pdflatex"
+  "sprawozdanie-z-laboratoriow.ind" 1782378184.80492 0 d41d8cd98f00b204e9800998ecf8427e "makeindex sprawozdanie-z-laboratoriow.idx"
+  "sprawozdanie-z-laboratoriow.out" 1782378186.26094 9113 56dfa0587f0dd7573ff1fccef35f2924 "pdflatex"
+  "sprawozdanie-z-laboratoriow.tex" 1782378183.86491 39963 ea17b39fd3271c0195ae1b7455239110 ""
+  "sprawozdanie-z-laboratoriow.toc" 1782378186.26094 4109 4a18d237215417437f7a58b67c2cc5f9 "pdflatex"
   (generated)
   "sprawozdanie-z-laboratoriow.aux"
   "sprawozdanie-z-laboratoriow.idx"

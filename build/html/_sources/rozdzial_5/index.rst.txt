@@ -6,8 +6,6 @@ Zapytania do bazy danych
    :maxdepth: 2
    :caption: Spis treści:
 
-Wprowadzenie
-============
 W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych. 
 
 Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt ``conn``), co pozwala na bezpośrednie użycie kodu zarówno w środowiskach produkcyjnych, jak i w notatnikach JupyterLab (JupyterHub).
@@ -22,6 +20,7 @@ Selekcja danych i funkcje wierszowe
 Pierwsze z zapytań wykorzystuje klauzulę ``WHERE`` do filtrowania rekordów po statusie transakcji oraz implementuje wierszowe operacje arytmetyczne na typach dat (natywnie zwracające typ ``integer`` w PostgreSQL).
 
 .. py:function:: pobierz_czas_wypozyczen(conn)
+   :noindex:
 
    Pobiera wykaz zakończonych wypożyczeń wraz z dynamicznie obliczanym czasem ich trwania.
 
@@ -35,6 +34,7 @@ Funkcje agregujące i grupowanie
 Do generowania metryk biznesowych wykorzystano funkcje agregujące, operujące na zgrupowanych wierszach dla poszczególnych osi wymiarów.
 
 .. py:function:: raport_przychodow_kategorii(conn)
+   :noindex:
 
    Generuje zsumowany raport estymowanych przychodów dla klasyfikacji pojazdów.
 
@@ -48,6 +48,7 @@ Połączenia asymetryczne (LEFT JOIN)
 W relacyjnych systemach analitycznych niezbędne bywa zachowanie informacji o encjach sierocych (nieposiadających powiązań w tabelach zależnych).
 
 .. py:function:: sprawdz_historie_aut(conn)
+   :noindex:
 
    Zwraca pełny wykaz pojazdów we flocie, identyfikując jednostki z brakiem historii operacyjnej.
 
@@ -61,6 +62,7 @@ Operatory zbiorowe (Różnica)
 Część logiki oparto o matematyczną algebrę relacyjną zamiast tradycyjnych złączeń warunkowych, co ułatwia zarządzanie inwentarzem w czasie rzeczywistym.
 
 .. py:function:: dostepne_samochody(conn)
+   :noindex:
 
    Zwraca zbiór identyfikatorów pojazdów aktualnie dostępnych fizycznie na placu.
 
@@ -74,6 +76,7 @@ Zagnieżdżone podzapytania (Subqueries)
 Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie podrzędne bezpośrednio do predykatu kwerendy nadrzędnej.
 
 .. py:function:: klienci_najdrozszych_aut(conn)
+   :noindex:
 
    Wyciąga dane kontaktowe klientów korzystających z najdroższego segmentu floty.
 
@@ -83,11 +86,9 @@ Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie 
    **Opis techniczny:** Rdzeniem zapytania jest dynamiczne podzapytanie w klauzuli ``WHERE`` określające maksymalną stawkę bazową: ``(SELECT id_kategorii FROM kategorie ORDER BY cena_za_dzien DESC LIMIT 1)``. Zapewnia to odporność aplikacji na zmiany cenifikatora w tabeli kategorii.
 
 Implementacja skryptowa
-============================
+=======================
 
-Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji JupyterLaba. Moduł zachowuje natywną zgodność biblioteczną z architekturą środowiska uruchomieniowego wdrożonego na serwerze Linux.
-
-Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący prawidłowy wzorzec komunikacji za pomocą mechanizmu kursorów biblioteki obsługującej bazę.
+Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji. 
 
 .. code-block:: python
 
@@ -109,5 +110,3 @@ Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący 
         wyniki = cursor.fetchall()
         cursor.close()
         return wyniki
-
-    # Poniżej znajduje się implementacja pozostałych funkcji...

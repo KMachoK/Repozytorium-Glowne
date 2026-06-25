@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2026.3.1)  25 JUN 2026 10:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2026.3.1)  25 JUN 2026 11:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -945,46 +945,38 @@ Chapter 5.
 
 ]
 
-[12] (./sprawozdanie-z-laboratoriow.ind
+[12] (./sprawozdanie-z-laboratoriow.ind)
 
-[13]
-
-
-
-[14
-
-
-
-]) (./sprawozdanie-z-laboratoriow.aux)
+[13] (./sprawozdanie-z-laboratoriow.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `sprawozdanie-z-laboratoriow.out' has not cha
 nged.
-(rerunfilecheck)             Checksum: B94B218D240A4761375C04BB113AF1E5;9298.
+(rerunfilecheck)             Checksum: 56DFA0587F0DD7573FF1FCCEF35F2924;9113.
  ) 
 Here is how much of TeX's memory you used:
- 20375 strings out of 473197
- 364392 string characters out of 5718606
- 787327 words of memory out of 5000000
- 43134 multiletter control sequences out of 15000+600000
+ 20353 strings out of 473197
+ 363902 string characters out of 5718606
+ 786969 words of memory out of 5000000
+ 43120 multiletter control sequences out of 15000+600000
  617270 words of font info for 94 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  72i,12n,82p,1216b,674s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/
 texmf/fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/type1/public
-/tex-gyre/qhvr.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmb.pfb></usr
-/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb></usr/share/texmf/fonts/type1
-/public/tex-gyre/qtmri.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/tx
-fonts/t1xbtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xt
-t.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/txfonts/tcxtt.pfb>
-Output written on sprawozdanie-z-laboratoriow.pdf (17 pages, 210004 bytes).
+/tex-gyre/qtmb.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb></usr
+/share/texmf/fonts/type1/public/tex-gyre/qtmri.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/txfonts/t1xbtt.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/tc
+xtt.pfb>
+Output written on sprawozdanie-z-laboratoriow.pdf (16 pages, 190008 bytes).
 PDF statistics:
- 412 PDF objects out of 1000 (max. 8388607)
- 371 compressed objects within 4 object streams
- 75 named destinations out of 1000 (max. 500000)
- 381 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 377 PDF objects out of 1000 (max. 8388607)
+ 338 compressed objects within 4 object streams
+ 67 named destinations out of 1000 (max. 500000)
+ 365 words of extra memory for PDF output out of 10000 (max. 10000000)
 

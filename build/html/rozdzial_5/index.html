@@ -35,11 +35,8 @@
 <h1>Zapytania do bazy danych<a class="headerlink" href="#zapytania-do-bazy-danych" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<section id="wprowadzenie">
-<h2>Wprowadzenie<a class="headerlink" href="#wprowadzenie" title="Link to this heading">¶</a></h2>
 <p>W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych.</p>
 <p>Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt <code class="docutils literal notranslate"><span class="pre">conn</span></code>), co pozwala na bezpośrednie użycie kodu zarówno w środowiskach produkcyjnych, jak i w notatnikach JupyterLab (JupyterHub).</p>
-</section>
 <section id="zaawansowane-mechanizmy-zapytan-sql">
 <h2>Zaawansowane mechanizmy zapytań SQL<a class="headerlink" href="#zaawansowane-mechanizmy-zapytan-sql" title="Link to this heading">¶</a></h2>
 <p>Aby system w pełni odpowiadał na potrzeby analityczne, w kodzie Pythona wdrożono pełne spektrum operacji na relacjach, w tym selekcję z operacjami wierszowymi, agregacje wielowierszowe, algebrę zbiorów, złączenia asymetryczne oraz podzapytania skalarne. Poniżej omówiono zaimplementowaną logikę bazodanową.</p>
@@ -47,8 +44,8 @@
 <h3>Selekcja danych i funkcje wierszowe<a class="headerlink" href="#selekcja-danych-i-funkcje-wierszowe" title="Link to this heading">¶</a></h3>
 <p>Pierwsze z zapytań wykorzystuje klauzulę <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> do filtrowania rekordów po statusie transakcji oraz implementuje wierszowe operacje arytmetyczne na typach dat (natywnie zwracające typ <code class="docutils literal notranslate"><span class="pre">integer</span></code> w PostgreSQL).</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="pobierz_czas_wypozyczen">
-<span class="sig-name descname"><span class="pre">pobierz_czas_wypozyczen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pobierz_czas_wypozyczen" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">pobierz_czas_wypozyczen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Pobiera wykaz zakończonych wypożyczeń wraz z dynamicznie obliczanym czasem ich trwania.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -66,8 +63,8 @@
 <h3>Funkcje agregujące i grupowanie<a class="headerlink" href="#funkcje-agregujace-i-grupowanie" title="Link to this heading">¶</a></h3>
 <p>Do generowania metryk biznesowych wykorzystano funkcje agregujące, operujące na zgrupowanych wierszach dla poszczególnych osi wymiarów.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="raport_przychodow_kategorii">
-<span class="sig-name descname"><span class="pre">raport_przychodow_kategorii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#raport_przychodow_kategorii" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">raport_przychodow_kategorii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Generuje zsumowany raport estymowanych przychodów dla klasyfikacji pojazdów.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -85,8 +82,8 @@
 <h3>Połączenia asymetryczne (LEFT JOIN)<a class="headerlink" href="#polaczenia-asymetryczne-left-join" title="Link to this heading">¶</a></h3>
 <p>W relacyjnych systemach analitycznych niezbędne bywa zachowanie informacji o encjach sierocych (nieposiadających powiązań w tabelach zależnych).</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="sprawdz_historie_aut">
-<span class="sig-name descname"><span class="pre">sprawdz_historie_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprawdz_historie_aut" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">sprawdz_historie_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Zwraca pełny wykaz pojazdów we flocie, identyfikując jednostki z brakiem historii operacyjnej.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -104,8 +101,8 @@
 <h3>Operatory zbiorowe (Różnica)<a class="headerlink" href="#operatory-zbiorowe-roznica" title="Link to this heading">¶</a></h3>
 <p>Część logiki oparto o matematyczną algebrę relacyjną zamiast tradycyjnych złączeń warunkowych, co ułatwia zarządzanie inwentarzem w czasie rzeczywistym.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="dostepne_samochody">
-<span class="sig-name descname"><span class="pre">dostepne_samochody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dostepne_samochody" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">dostepne_samochody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Zwraca zbiór identyfikatorów pojazdów aktualnie dostępnych fizycznie na placu.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -123,8 +120,8 @@
 <h3>Zagnieżdżone podzapytania (Subqueries)<a class="headerlink" href="#zagniezdzone-podzapytania-subqueries" title="Link to this heading">¶</a></h3>
 <p>Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie podrzędne bezpośrednio do predykatu kwerendy nadrzędnej.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="klienci_najdrozszych_aut">
-<span class="sig-name descname"><span class="pre">klienci_najdrozszych_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#klienci_najdrozszych_aut" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">klienci_najdrozszych_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Wyciąga dane kontaktowe klientów korzystających z najdroższego segmentu floty.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -141,8 +138,7 @@
 </section>
 <section id="implementacja-skryptowa">
 <h2>Implementacja skryptowa<a class="headerlink" href="#implementacja-skryptowa" title="Link to this heading">¶</a></h2>
-<p>Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji JupyterLaba. Moduł zachowuje natywną zgodność biblioteczną z architekturą środowiska uruchomieniowego wdrożonego na serwerze Linux.</p>
-<p>Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący prawidłowy wzorzec komunikacji za pomocą mechanizmu kursorów biblioteki obsługującej bazę.</p>
+<p>Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
 
@@ -161,8 +157,6 @@
     <span class="n">wyniki</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">wyniki</span>
-
-<span class="c1"># Poniżej znajduje się implementacja pozostałych funkcji...</span>
 </pre></div>
 </div>
 </section>
