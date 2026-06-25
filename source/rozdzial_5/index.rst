@@ -1,13 +1,19 @@
-====================================
-Rozdział 5: Zapytania do bazy danych
-====================================
+========================
+Zapytania do bazy danych
+========================
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Spis treści:
+
+Wprowadzenie
+============
 W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych. 
 
 Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt ``conn``), co pozwala na bezpośrednie użycie kodu zarówno w środowiskach produkcyjnych, jak i w notatnikach JupyterLab (JupyterHub).
 
-5.1. Zaawansowane mechanizmy zapytań SQL
-========================================
+Zaawansowane mechanizmy zapytań SQL
+===================================
 
 Aby system w pełni odpowiadał na potrzeby analityczne, w kodzie Pythona wdrożono pełne spektrum operacji na relacjach, w tym selekcję z operacjami wierszowymi, agregacje wielowierszowe, algebrę zbiorów, złączenia asymetryczne oraz podzapytania skalarne. Poniżej omówiono zaimplementowaną logikę bazodanową.
 
@@ -76,7 +82,7 @@ Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie 
 
    **Opis techniczny:** Rdzeniem zapytania jest dynamiczne podzapytanie w klauzuli ``WHERE`` określające maksymalną stawkę bazową: ``(SELECT id_kategorii FROM kategorie ORDER BY cena_za_dzien DESC LIMIT 1)``. Zapewnia to odporność aplikacji na zmiany cenifikatora w tabeli kategorii.
 
-5.2. Implementacja skryptowa
+Implementacja skryptowa
 ============================
 
 Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji JupyterLaba. Moduł zachowuje natywną zgodność biblioteczną z architekturą środowiska uruchomieniowego wdrożonego na serwerze Linux.
