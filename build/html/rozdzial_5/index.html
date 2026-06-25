@@ -5,13 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Zadanie 5 &#8212; Sprawozdanie-z-laboratoriów  documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <title>Zapytania do bazy danych &#8212; Sprawozdanie-z-laboratoriów  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
     <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Implementacja bazy danych i import danych" href="../rozdzial_4/index.html" />
@@ -32,8 +31,141 @@
 
           <div class="body" role="main">
             
-  <section id="zadanie-5">
-<h1>Zadanie 5<a class="headerlink" href="#zadanie-5" title="Link to this heading">¶</a></h1>
+  <section id="zapytania-do-bazy-danych">
+<h1>Zapytania do bazy danych<a class="headerlink" href="#zapytania-do-bazy-danych" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="wprowadzenie">
+<h2>Wprowadzenie<a class="headerlink" href="#wprowadzenie" title="Link to this heading">¶</a></h2>
+<p>W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych.</p>
+<p>Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt <code class="docutils literal notranslate"><span class="pre">conn</span></code>), co pozwala na bezpośrednie użycie kodu zarówno w środowiskach produkcyjnych, jak i w notatnikach JupyterLab (JupyterHub).</p>
+</section>
+<section id="zaawansowane-mechanizmy-zapytan-sql">
+<h2>Zaawansowane mechanizmy zapytań SQL<a class="headerlink" href="#zaawansowane-mechanizmy-zapytan-sql" title="Link to this heading">¶</a></h2>
+<p>Aby system w pełni odpowiadał na potrzeby analityczne, w kodzie Pythona wdrożono pełne spektrum operacji na relacjach, w tym selekcję z operacjami wierszowymi, agregacje wielowierszowe, algebrę zbiorów, złączenia asymetryczne oraz podzapytania skalarne. Poniżej omówiono zaimplementowaną logikę bazodanową.</p>
+<section id="selekcja-danych-i-funkcje-wierszowe">
+<h3>Selekcja danych i funkcje wierszowe<a class="headerlink" href="#selekcja-danych-i-funkcje-wierszowe" title="Link to this heading">¶</a></h3>
+<p>Pierwsze z zapytań wykorzystuje klauzulę <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> do filtrowania rekordów po statusie transakcji oraz implementuje wierszowe operacje arytmetyczne na typach dat (natywnie zwracające typ <code class="docutils literal notranslate"><span class="pre">integer</span></code> w PostgreSQL).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pobierz_czas_wypozyczen">
+<span class="sig-name descname"><span class="pre">pobierz_czas_wypozyczen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pobierz_czas_wypozyczen" title="Link to this definition">¶</a></dt>
+<dd><p>Pobiera wykaz zakończonych wypożyczeń wraz z dynamicznie obliczanym czasem ich trwania.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn</strong> – Aktywny obiekt połączenia z bazą danych (np. psycopg).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista krotek: (ID wypożyczenia, złączona nazwa auta, wyliczona liczba dni).</p>
+</dd>
+</dl>
+<p><strong>Opis techniczny:</strong> Zapytanie realizuje operację arytmetyczną <code class="docutils literal notranslate"><span class="pre">(w.data_do</span> <span class="pre">-</span> <span class="pre">w.data_od)</span></code> bezpośrednio na warstwie bazy danych dla rekordów ze statusem ‘Zakonczone’. Dodatkowo, operator <code class="docutils literal notranslate"><span class="pre">||</span></code> pozwala na wierszową konkatenację atrybutów marki i modelu do jednej, płaskiej kolumny.</p>
+</dd></dl>
+
+</section>
+<section id="funkcje-agregujace-i-grupowanie">
+<h3>Funkcje agregujące i grupowanie<a class="headerlink" href="#funkcje-agregujace-i-grupowanie" title="Link to this heading">¶</a></h3>
+<p>Do generowania metryk biznesowych wykorzystano funkcje agregujące, operujące na zgrupowanych wierszach dla poszczególnych osi wymiarów.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="raport_przychodow_kategorii">
+<span class="sig-name descname"><span class="pre">raport_przychodow_kategorii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#raport_przychodow_kategorii" title="Link to this definition">¶</a></dt>
+<dd><p>Generuje zsumowany raport estymowanych przychodów dla klasyfikacji pojazdów.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn</strong> – Aktywny obiekt połączenia z bazą danych.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista krotek: (Nazwa kategorii, liczba wypożyczeń, łączny przychód).</p>
+</dd>
+</dl>
+<p><strong>Opis techniczny:</strong> Kwerenda implementuje wielokrotne złączenie wewnętrzne (<code class="docutils literal notranslate"><span class="pre">INNER</span> <span class="pre">JOIN</span></code>) celem utworzenia widoku o płaskiej hierarchii. Wynik jest grupowany po nazwie kategorii (<code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span> <span class="pre">k.nazwa</span></code>), a przychód estymowany z wykorzystaniem matematycznego wyrażenia wewnątrz funkcji grupującej <code class="docutils literal notranslate"><span class="pre">SUM()</span></code>.</p>
+</dd></dl>
+
+</section>
+<section id="polaczenia-asymetryczne-left-join">
+<h3>Połączenia asymetryczne (LEFT JOIN)<a class="headerlink" href="#polaczenia-asymetryczne-left-join" title="Link to this heading">¶</a></h3>
+<p>W relacyjnych systemach analitycznych niezbędne bywa zachowanie informacji o encjach sierocych (nieposiadających powiązań w tabelach zależnych).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sprawdz_historie_aut">
+<span class="sig-name descname"><span class="pre">sprawdz_historie_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sprawdz_historie_aut" title="Link to this definition">¶</a></dt>
+<dd><p>Zwraca pełny wykaz pojazdów we flocie, identyfikując jednostki z brakiem historii operacyjnej.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn</strong> – Aktywny obiekt połączenia z bazą danych.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista krotek z danymi pojazdu oraz opcjonalną datą wypożyczenia.</p>
+</dd>
+</dl>
+<p><strong>Opis techniczny:</strong> Zastosowanie klauzuli <code class="docutils literal notranslate"><span class="pre">LEFT</span> <span class="pre">JOIN</span></code> między tabelą główną (samochody) a zależną (wypożyczenia) gwarantuje, że pojazdy niespełniające warunku złączenia zostaną zwrócone w relacji wynikowej z wartością <code class="docutils literal notranslate"><span class="pre">NULL</span></code> w miejscu atrybutów tabeli podrzędnej.</p>
+</dd></dl>
+
+</section>
+<section id="operatory-zbiorowe-roznica">
+<h3>Operatory zbiorowe (Różnica)<a class="headerlink" href="#operatory-zbiorowe-roznica" title="Link to this heading">¶</a></h3>
+<p>Część logiki oparto o matematyczną algebrę relacyjną zamiast tradycyjnych złączeń warunkowych, co ułatwia zarządzanie inwentarzem w czasie rzeczywistym.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="dostepne_samochody">
+<span class="sig-name descname"><span class="pre">dostepne_samochody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dostepne_samochody" title="Link to this definition">¶</a></dt>
+<dd><p>Zwraca zbiór identyfikatorów pojazdów aktualnie dostępnych fizycznie na placu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn</strong> – Aktywny obiekt połączenia z bazą danych.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista krotek identyfikujących dostępne samochody.</p>
+</dd>
+</dl>
+<p><strong>Opis techniczny:</strong> W zapytaniu użyto operatora różnicy zbiorów <code class="docutils literal notranslate"><span class="pre">EXCEPT</span></code>. System zaciąga nadzbiór wszystkich zarejestrowanych aut, a następnie odejmuje od niego podzbiór generowany przez kwerendę wskazującą pojazdy mające w tabeli transakcyjnej status ‘W trakcie’.</p>
+</dd></dl>
+
+</section>
+<section id="zagniezdzone-podzapytania-subqueries">
+<h3>Zagnieżdżone podzapytania (Subqueries)<a class="headerlink" href="#zagniezdzone-podzapytania-subqueries" title="Link to this heading">¶</a></h3>
+<p>Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie podrzędne bezpośrednio do predykatu kwerendy nadrzędnej.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="klienci_najdrozszych_aut">
+<span class="sig-name descname"><span class="pre">klienci_najdrozszych_aut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#klienci_najdrozszych_aut" title="Link to this definition">¶</a></dt>
+<dd><p>Wyciąga dane kontaktowe klientów korzystających z najdroższego segmentu floty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn</strong> – Aktywny obiekt połączenia z bazą danych.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Zbiór krotek (imię, nazwisko, email, telefon).</p>
+</dd>
+</dl>
+<p><strong>Opis techniczny:</strong> Rdzeniem zapytania jest dynamiczne podzapytanie w klauzuli <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> określające maksymalną stawkę bazową: <code class="docutils literal notranslate"><span class="pre">(SELECT</span> <span class="pre">id_kategorii</span> <span class="pre">FROM</span> <span class="pre">kategorie</span> <span class="pre">ORDER</span> <span class="pre">BY</span> <span class="pre">cena_za_dzien</span> <span class="pre">DESC</span> <span class="pre">LIMIT</span> <span class="pre">1)</span></code>. Zapewnia to odporność aplikacji na zmiany cenifikatora w tabeli kategorii.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="implementacja-skryptowa">
+<h2>Implementacja skryptowa<a class="headerlink" href="#implementacja-skryptowa" title="Link to this heading">¶</a></h2>
+<p>Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji JupyterLaba. Moduł zachowuje natywną zgodność biblioteczną z architekturą środowiska uruchomieniowego wdrożonego na serwerze Linux.</p>
+<p>Poniżej zamieszczono reprezentatywny wycinek kodu źródłowego demonstrujący prawidłowy wzorzec komunikacji za pomocą mechanizmu kursorów biblioteki obsługującej bazę.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="k">def</span> <span class="nf">sprawdz_historie_aut</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        SELECT</span>
+<span class="s2">            s.marka,</span>
+<span class="s2">            s.model,</span>
+<span class="s2">            s.nr_rejestracyjny,</span>
+<span class="s2">            w.data_od</span>
+<span class="s2">        FROM samochody s</span>
+<span class="s2">        LEFT JOIN wypozyczenia w ON s.id_samochodu = w.id_samochodu;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">wyniki</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">wyniki</span>
+
+<span class="c1"># Poniżej znajduje się implementacja pozostałych funkcji...</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -52,23 +184,14 @@
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Spis treści:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_1/index.html">Wstęp do sprawozdania oraz linki</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_2/index.html">Badania literaturowe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_3/index.html">Dokumentacja modelu bazy danych wypożyczalni samochodów</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rozdzial_4/index.html">Implementacja bazy danych i import danych</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Zadanie 5</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Zapytania do bazy danych</a></li>
 </ul>
 
 <div class="relations">
@@ -79,6 +202,16 @@
   </ul></li>
 </ul>
 </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -95,8 +228,8 @@
       &#169;2026, Konrad Machowski.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/rozdzial_5/index.rst.txt"

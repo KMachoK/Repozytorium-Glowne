@@ -1,0 +1,40 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter B
+  \item \spxentry{built\sphinxhyphen{}in function}
+    \subitem \spxentry{dostepne\_samochody()}, \hyperpage{12}
+    \subitem \spxentry{klienci\_najdrozszych\_aut()}, \hyperpage{12}
+    \subitem \spxentry{pobierz\_czas\_wypozyczen()}, \hyperpage{11}
+    \subitem \spxentry{raport\_przychodow\_kategorii()}, \hyperpage{11}
+    \subitem \spxentry{sprawdz\_historie\_aut()}, \hyperpage{12}
+
+  \indexspace
+  \bigletter D
+  \item \spxentry{dostepne\_samochody()}
+    \subitem \spxentry{built\sphinxhyphen{}in function}, \hyperpage{12}
+
+  \indexspace
+  \bigletter K
+  \item \spxentry{klienci\_najdrozszych\_aut()}
+    \subitem \spxentry{built\sphinxhyphen{}in function}, \hyperpage{12}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{pobierz\_czas\_wypozyczen()}
+    \subitem \spxentry{built\sphinxhyphen{}in function}, \hyperpage{11}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{raport\_przychodow\_kategorii()}
+    \subitem \spxentry{built\sphinxhyphen{}in function}, \hyperpage{11}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{sprawdz\_historie\_aut()}
+    \subitem \spxentry{built\sphinxhyphen{}in function}, \hyperpage{12}
+
+\end{sphinxtheindex}
