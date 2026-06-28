@@ -29,7 +29,7 @@ Repozytorium z plikami projektowymi
 -----------------------------------
 To repozytorium przechowuje właściwe pliki inżynierskie i deweloperskie. Zgromadzono w nim skrypty DDL definiujące struktury dla silników PostgreSQL i SQLite, wygenerowany plik lokalnej bazy danych oraz zbiory danych w formacie CSV, które wykorzystano do automatycznego zasilenia poszczególnych tabel.
 
-* **Link:** https://github.com/KMachoK/Repozytorium-Glowne.git
+* **Link:** https://github.com/KMachoK/Pliki-baz-danych.git
 
 Repozytoria reszty grupy (Submoduły)
 ------------------------------------
