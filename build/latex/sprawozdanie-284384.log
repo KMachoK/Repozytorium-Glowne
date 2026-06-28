@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.6.28)  28 JUN 2026 20:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.6.28)  28 JUN 2026 20:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**Sprawozdanie.tex
-(./Sprawozdanie.tex
+**sprawozdanie-284384.tex
+(./sprawozdanie-284384.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (./sphinxmanual.cls
@@ -732,10 +732,10 @@ Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
 Package: sphinxmessages 2019/01/04 v2.0 Localized LaTeX macros (Sphinx team)
 )
 \@indexfile=\write4
-\openout4 = `Sprawozdanie.idx'.
+\openout4 = `sprawozdanie-284384.idx'.
 
 
-Writing index file Sprawozdanie.idx
+Writing index file sprawozdanie-284384.idx
 LaTeX Font Info:    Trying to load font information for T1+qtm on input line 87
 .
 (/usr/share/texmf/tex/latex/tex-gyre/t1qtm.fd
@@ -746,8 +746,8 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count323
 \l__pdf_internal_box=\box120
 )
-(./Sprawozdanie.aux)
-\openout1 = `Sprawozdanie.aux'.
+(./sprawozdanie-284384.aux)
+\openout1 = `sprawozdanie-284384.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
 LaTeX Font Info:    ... okay on input line 87.
@@ -827,9 +827,9 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package hyperref Info: Link coloring ON on input line 87.
-(./Sprawozdanie.out) (./Sprawozdanie.out)
+(./sprawozdanie-284384.out) (./sprawozdanie-284384.out)
 \@outlinefile=\write5
-\openout5 = `Sprawozdanie.out'.
+\openout5 = `sprawozdanie-284384.out'.
 
 Package hyperref Info: Option `pageanchor' set `false' on input line 95.
 LaTeX Font Info:    Trying to load font information for T1+qhv on input line 95
@@ -851,13 +851,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
-dvips/tex-gyre/q-ec.enc}] (./Sprawozdanie.toc [1
+dvips/tex-gyre/q-ec.enc}] (./sprawozdanie-284384.toc [1
 
 
 
 ] [2])
 \tf@toc=\write6
-\openout6 = `Sprawozdanie.toc'.
+\openout6 = `sprawozdanie-284384.toc'.
 
  [3]
 LaTeX Font Info:    Trying to load font information for TS1+qtm on input line 1
@@ -911,22 +911,22 @@ Chapter 4.
 Chapter 5.
 [42
 
-] [43] (./Sprawozdanie.ind) [44] (./Sprawozdanie.aux)
+] [43] (./sprawozdanie-284384.ind) [44] (./sprawozdanie-284384.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-Package rerunfilecheck Info: File `Sprawozdanie.out' has not changed.
+Package rerunfilecheck Info: File `sprawozdanie-284384.out' has not changed.
 (rerunfilecheck)             Checksum: 45A5CE4F8BA7E74D25DCDAE5F2D1D933;38751.
  ) 
 Here is how much of TeX's memory you used:
  17541 strings out of 476182
- 304150 string characters out of 5795595
+ 304353 string characters out of 5795595
  1974975 words of memory out of 5000000
  38855 multiletter control sequences out of 15000+600000
  626566 words of font info for 103 fonts, out of 8000000 for 9000
  15 hyphenation exceptions out of 8191
- 72i,13n,83p,1201b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,13n,83p,1208b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/
 texmf/fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/type1/public
@@ -936,7 +936,7 @@ texmf/fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/type1/public
 fonts/t1xbtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xt
 t.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/txfonts/tcxtt.pfb>
-Output written on Sprawozdanie.pdf (48 pages, 362968 bytes).
+Output written on sprawozdanie-284384.pdf (48 pages, 363213 bytes).
 PDF statistics:
  1206 PDF objects out of 1440 (max. 8388607)
  1126 compressed objects within 12 object streams
