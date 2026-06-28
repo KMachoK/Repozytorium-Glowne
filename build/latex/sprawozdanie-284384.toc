@@ -157,12 +157,18 @@
 \contentsline {section}{\numberline {4.4}Koncepcja mechanizmów masowego importu (ETL)}{40}{section.4.4}%
 \contentsline {subsection}{\numberline {4.4.1}Mechanizm COPY w PostgreSQL}{40}{subsection.4.4.1}%
 \contentsline {subsection}{\numberline {4.4.2}Mechanizm Batch Insert w SQLite}{41}{subsection.4.4.2}%
-\contentsline {chapter}{\numberline {5}Zapytania do bazy danych}{42}{chapter.5}%
+\contentsline {chapter}{\numberline {5}Zapytania do bazy danych (SQLite PostgreSQL)}{42}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Wprowadzenie}{42}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Zaawansowane mechanizmy zapytań SQL}{42}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Selekcja danych i funkcje wierszowe}{42}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Funkcje agregujące i grupowanie}{42}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Połączenia asymetryczne (LEFT JOIN)}{43}{subsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.2.4}Operatory zbiorowe (Różnica)}{43}{subsection.5.2.4}%
-\contentsline {subsection}{\numberline {5.2.5}Zagnieżdżone podzapytania (Subqueries)}{43}{subsection.5.2.5}%
-\contentsline {section}{\numberline {5.3}Implementacja skryptowa}{43}{section.5.3}%
+\contentsline {section}{\numberline {5.2}Część 1: Zapytania w dialekcie SQLite}{42}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Arytmetyka dat w SQLite (julianday)}{42}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Agregacja i złączenia wewnętrzne (INNER JOIN)}{42}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Połączenia asymetryczne (LEFT JOIN)}{42}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Operatory zbiorowe (EXCEPT)}{43}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Agregacja tekstowa (GROUP\_CONCAT)}{43}{subsection.5.2.5}%
+\contentsline {section}{\numberline {5.3}Część 2: Zaawansowane zapytania PostgreSQL}{43}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Zaawansowana agregacja tekstowa (STRING\_AGG)}{43}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Selektywna agregacja (Klauzula FILTER)}{43}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Funkcje okna (Window Functions)}{44}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Natywna arytmetyka interwałów dat (INTERVAL)}{44}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Wyrażenia tablicowe (CTE \sphinxhyphen {} WITH)}{44}{subsection.5.3.5}%
+\contentsline {section}{\numberline {5.4}Implementacja skryptowa}{44}{section.5.4}%

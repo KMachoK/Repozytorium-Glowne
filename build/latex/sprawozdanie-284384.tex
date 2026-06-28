@@ -3080,69 +3080,63 @@ W silniku SQLite wykorzystano z kolei grupowanie instrukcji poprzez metodę \sph
 \sphinxstepscope
 
 
-\chapter{Zapytania do bazy danych}
-\label{\detokenize{rozdzial_5/index:zapytania-do-bazy-danych}}\label{\detokenize{rozdzial_5/index::doc}}
+\chapter{Zapytania do bazy danych (SQLite PostgreSQL)}
+\label{\detokenize{rozdzial_5/index:zapytania-do-bazy-danych-sqlite-postgresql}}\label{\detokenize{rozdzial_5/index::doc}}
 
 \section{Wprowadzenie}
 \label{\detokenize{rozdzial_5/index:wprowadzenie}}
 \sphinxAtStartPar
-W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Przygotowane zapytania SQL realizują złożone scenariusze biznesowe wypożyczalni samochodów, wykorzystując zaawansowane mechanizmy silnika bazy danych.
+W ramach piątego rozdziału zaimplementowano moduł analityczny w języku Python, służący do interakcji ze strukturami relacyjnej bazy danych. Ze względu na zróżnicowane środowisko wdrożeniowe, przygotowano osobne pule zapytań dedykowane dla silnika \sphinxstylestrong{SQLite} (wykorzystywanego lokalnie/testowo) oraz \sphinxstylestrong{PostgreSQL} (środowisko produkcyjne).
 
 \sphinxAtStartPar
-Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt \sphinxcode{\sphinxupquote{conn}}), co pozwala na bezpośrednie użycie kodu zarówno w środowiskach produkcyjnych, jak i w notatnikach JupyterLab (JupyterHub).
+Zgodnie z dobrymi praktykami inżynierii oprogramowania, kwerendy zhermetyzowano w postaci funkcji przyjmujących aktywny wskaźnik połączenia (obiekt \sphinxcode{\sphinxupquote{conn}}), co pozwala na bezpośrednie użycie kodu w aplikacjach oraz notatnikach Jupyter.
 
 
-\section{Zaawansowane mechanizmy zapytań SQL}
-\label{\detokenize{rozdzial_5/index:zaawansowane-mechanizmy-zapytan-sql}}
+\section{Część 1: Zapytania w dialekcie SQLite}
+\label{\detokenize{rozdzial_5/index:czesc-1-zapytania-w-dialekcie-sqlite}}
 \sphinxAtStartPar
-Aby system w pełni odpowiadał na potrzeby analityczne, w kodzie Pythona wdrożono pełne spektrum operacji na relacjach, w tym selekcję z operacjami wierszowymi, agregacje wielowierszowe, algebrę zbiorów, złączenia asymetryczne oraz podzapytania skalarne. Poniżej omówiono zaimplementowaną logikę bazodanową.
+Poniższe 5 zapytań zostało zoptymalizowanych pod kątem lekkiego silnika SQLite, wykorzystując jego natywne funkcje przetwarzania dat i agregacji tekstowej.
 
 
-\subsection{Selekcja danych i funkcje wierszowe}
-\label{\detokenize{rozdzial_5/index:selekcja-danych-i-funkcje-wierszowe}}
-\sphinxAtStartPar
-Pierwsze z zapytań wykorzystuje klauzulę \sphinxcode{\sphinxupquote{WHERE}} do filtrowania rekordów po statusie transakcji oraz implementuje wierszowe operacje arytmetyczne na typach dat (natywnie zwracające typ \sphinxcode{\sphinxupquote{integer}} w PostgreSQL).
-
+\subsection{Arytmetyka dat w SQLite (julianday)}
+\label{\detokenize{rozdzial_5/index:arytmetyka-dat-w-sqlite-julianday}}
 
 \begin{savenotes}\begin{fulllineitems}
 
 \pysigstartsignatures
 \pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{pobierz\_czas\_wypozyczen}}}
+{\sphinxbfcode{\sphinxupquote{sqlite\_pobierz\_czas\_wypozyczen}}}
 {\sphinxparam{\DUrole{n}{conn}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Pobiera wykaz zakończonych wypożyczeń wraz z dynamicznie obliczanym czasem ich trwania.
+Pobiera wykaz zakończonych wypożyczeń z obliczonym czasem ich trwania.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Aktywny obiekt połączenia z bazą danych (np. psycopg).
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (sqlite3).
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Lista krotek: (ID wypożyczenia, złączona nazwa auta, wyliczona liczba dni).
+Lista krotek: (ID, złączona nazwa auta, liczba dni).
 
 \end{description}\end{quote}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Opis techniczny:} Zapytanie realizuje operację arytmetyczną \sphinxcode{\sphinxupquote{(w.data\_do \sphinxhyphen{} w.data\_od)}} bezpośrednio na warstwie bazy danych dla rekordów ze statusem ‘Zakonczone’. Dodatkowo, operator \sphinxcode{\sphinxupquote{||}} pozwala na wierszową konkatenację atrybutów marki i modelu do jednej, płaskiej kolumny.
+\sphinxstylestrong{Opis techniczny:} Ponieważ SQLite nie posiada natywnego typu daty, wykorzystano funkcję \sphinxcode{\sphinxupquote{julianday()}} do konwersji ciągów tekstowych na wartości zmiennoprzecinkowe reprezentujące dni, a następnie użyto rzutowania \sphinxcode{\sphinxupquote{CAST(... AS INTEGER)}}.
 
 \end{fulllineitems}\end{savenotes}
 
 
 
-\subsection{Funkcje agregujące i grupowanie}
-\label{\detokenize{rozdzial_5/index:funkcje-agregujace-i-grupowanie}}
-\sphinxAtStartPar
-Do generowania metryk biznesowych wykorzystano funkcje agregujące, operujące na zgrupowanych wierszach dla poszczególnych osi wymiarów.
-
+\subsection{Agregacja i złączenia wewnętrzne (INNER JOIN)}
+\label{\detokenize{rozdzial_5/index:agregacja-i-zlaczenia-wewnetrzne-inner-join}}
 
 \begin{savenotes}\begin{fulllineitems}
 
 \pysigstartsignatures
 \pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{raport\_przychodow\_kategorii}}}
+{\sphinxbfcode{\sphinxupquote{sqlite\_raport\_przychodow\_kategorii}}}
 {\sphinxparam{\DUrole{n}{conn}}}
 {}
 \pysigstopsignatures
@@ -3151,16 +3145,16 @@ Generuje zsumowany raport estymowanych przychodów dla klasyfikacji pojazdów.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Aktywny obiekt połączenia z bazą danych.
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (sqlite3).
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Lista krotek: (Nazwa kategorii, liczba wypożyczeń, łączny przychód).
+Lista krotek: (Nazwa kategorii, łączny przychód).
 
 \end{description}\end{quote}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Opis techniczny:} Kwerenda implementuje wielokrotne złączenie wewnętrzne (\sphinxcode{\sphinxupquote{INNER JOIN}}) celem utworzenia widoku o płaskiej hierarchii. Wynik jest grupowany po nazwie kategorii (\sphinxcode{\sphinxupquote{GROUP BY k.nazwa}}), a przychód estymowany z wykorzystaniem matematycznego wyrażenia wewnątrz funkcji grupującej \sphinxcode{\sphinxupquote{SUM()}}.
+\sphinxstylestrong{Opis techniczny:} Kwerenda implementuje złączenie \sphinxcode{\sphinxupquote{INNER JOIN}} łącząc tabele kategorii, samochodów i transakcji, grupując wyniki funkcją \sphinxcode{\sphinxupquote{SUM()}} po nazwie kategorii.
 
 \end{fulllineitems}\end{savenotes}
 
@@ -3168,92 +3162,244 @@ Lista krotek: (Nazwa kategorii, liczba wypożyczeń, łączny przychód).
 
 \subsection{Połączenia asymetryczne (LEFT JOIN)}
 \label{\detokenize{rozdzial_5/index:polaczenia-asymetryczne-left-join}}
-\sphinxAtStartPar
-W relacyjnych systemach analitycznych niezbędne bywa zachowanie informacji o encjach sierocych (nieposiadających powiązań w tabelach zależnych).
-
 
 \begin{savenotes}\begin{fulllineitems}
 
 \pysigstartsignatures
 \pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{sprawdz\_historie\_aut}}}
+{\sphinxbfcode{\sphinxupquote{sqlite\_sprawdz\_historie\_aut}}}
 {\sphinxparam{\DUrole{n}{conn}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Zwraca pełny wykaz pojazdów we flocie, identyfikując jednostki z brakiem historii operacyjnej.
+Zwraca pełny wykaz pojazdów, identyfikując te bez historii wypożyczeń.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Aktywny obiekt połączenia z bazą danych.
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (sqlite3).
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Lista krotek z danymi pojazdu oraz opcjonalną datą wypożyczenia.
+Lista krotek (Marka, Model, Data wypożyczenia lub NULL).
 
 \end{description}\end{quote}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Opis techniczny:} Zastosowanie klauzuli \sphinxcode{\sphinxupquote{LEFT JOIN}} między tabelą główną (samochody) a zależną (wypożyczenia) gwarantuje, że pojazdy niespełniające warunku złączenia zostaną zwrócone w relacji wynikowej z wartością \sphinxcode{\sphinxupquote{NULL}} w miejscu atrybutów tabeli podrzędnej.
+\sphinxstylestrong{Opis techniczny:} Zastosowanie klauzuli \sphinxcode{\sphinxupquote{LEFT JOIN}} gwarantuje, że pojazdy niespełniające warunku złączenia zostaną zwrócone w relacji wynikowej z wartością \sphinxcode{\sphinxupquote{NULL}}.
 
 \end{fulllineitems}\end{savenotes}
 
 
 
-\subsection{Operatory zbiorowe (Różnica)}
-\label{\detokenize{rozdzial_5/index:operatory-zbiorowe-roznica}}
-\sphinxAtStartPar
-Część logiki oparto o matematyczną algebrę relacyjną zamiast tradycyjnych złączeń warunkowych, co ułatwia zarządzanie inwentarzem w czasie rzeczywistym.
-
+\subsection{Operatory zbiorowe (EXCEPT)}
+\label{\detokenize{rozdzial_5/index:operatory-zbiorowe-except}}
 
 \begin{savenotes}\begin{fulllineitems}
 
 \pysigstartsignatures
 \pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{dostepne\_samochody}}}
+{\sphinxbfcode{\sphinxupquote{sqlite\_dostepne\_samochody}}}
 {\sphinxparam{\DUrole{n}{conn}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Zwraca zbiór identyfikatorów pojazdów aktualnie dostępnych fizycznie na placu.
+Zwraca zbiór identyfikatorów aut aktualnie dostępnych na placu.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Aktywny obiekt połączenia z bazą danych.
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (sqlite3).
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Lista krotek identyfikujących dostępne samochody.
+Lista krotek z ID pojazdów.
 
 \end{description}\end{quote}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Opis techniczny:} W zapytaniu użyto operatora różnicy zbiorów \sphinxcode{\sphinxupquote{EXCEPT}}. System zaciąga nadzbiór wszystkich zarejestrowanych aut, a następnie odejmuje od niego podzbiór generowany przez kwerendę wskazującą pojazdy mające w tabeli transakcyjnej status ‘W trakcie’.
+\sphinxstylestrong{Opis techniczny:} Wykorzystano operator różnicy zbiorów \sphinxcode{\sphinxupquote{EXCEPT}}. System zaciąga nadzbiór wszystkich aut i odejmuje podzbiór aut o statusie ‘W trakcie’.
 
 \end{fulllineitems}\end{savenotes}
 
 
 
-\subsection{Zagnieżdżone podzapytania (Subqueries)}
-\label{\detokenize{rozdzial_5/index:zagniezdzone-podzapytania-subqueries}}
-\sphinxAtStartPar
-Logikę najdroższego zasobu odseparowano strukturalnie, wstrzykując zapytanie podrzędne bezpośrednio do predykatu kwerendy nadrzędnej.
-
+\subsection{Agregacja tekstowa (GROUP\_CONCAT)}
+\label{\detokenize{rozdzial_5/index:agregacja-tekstowa-group-concat}}
 
 \begin{savenotes}\begin{fulllineitems}
 
 \pysigstartsignatures
 \pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{klienci\_najdrozszych\_aut}}}
+{\sphinxbfcode{\sphinxupquote{sqlite\_wyposazenie\_floty}}}
 {\sphinxparam{\DUrole{n}{conn}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Wyciąga dane kontaktowe klientów korzystających z najdroższego segmentu floty.
+Agreguje listę wyposażenia dodatkowego dla każdego samochodu w jeden ciąg znaków.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Aktywny obiekt połączenia z bazą danych.
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (sqlite3).
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Lista krotek (ID pojazdu, połączona lista wyposażenia).
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Opis techniczny:} Użyto specyficznej dla SQLite funkcji \sphinxcode{\sphinxupquote{GROUP\_CONCAT()}}, która spłaszcza relację jeden\sphinxhyphen{}do\sphinxhyphen{}wielu do pojedynczej kolumny tekstowej oddzielonej przecinkami.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\section{Część 2: Zaawansowane zapytania PostgreSQL}
+\label{\detokenize{rozdzial_5/index:czesc-2-zaawansowane-zapytania-postgresql}}
+\sphinxAtStartPar
+Kolejne 5 zapytań wykorzystuje potężne mechanizmy analityczne wbudowane w silnik PostgreSQL, niedostępne w prostszych bazach danych.
+
+
+\subsection{Zaawansowana agregacja tekstowa (STRING\_AGG)}
+\label{\detokenize{rozdzial_5/index:zaawansowana-agregacja-tekstowa-string-agg}}
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{pg\_lista\_klientow\_aut}}}
+{\sphinxparam{\DUrole{n}{conn}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Generuje dla każdego auta czytelną listę wszystkich klientów, którzy go wypożyczyli.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (psycopg).
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Lista krotek (Auto, lista klientów).
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Opis techniczny:} Wykorzystano potężną funkcję \sphinxcode{\sphinxupquote{STRING\_AGG()}}, która w przeciwieństwie do rozwiązań z SQLite pozwala na użycie własnego separatora oraz zagnieżdżonego sortowania klauzulą \sphinxcode{\sphinxupquote{ORDER BY}} wewnątrz agregacji.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\subsection{Selektywna agregacja (Klauzula FILTER)}
+\label{\detokenize{rozdzial_5/index:selektywna-agregacja-klauzula-filter}}
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{pg\_analiza\_przychodow\_selektywna}}}
+{\sphinxparam{\DUrole{n}{conn}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Zwraca sumę przychodów podzieloną na opłacone i zaległe w jednym zapytaniu.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (psycopg).
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Lista krotek (Kategoria, suma opłaconych, suma zaległych).
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Opis techniczny:} Użyto klauzuli \sphinxcode{\sphinxupquote{FILTER (WHERE ...)}} podpiętej pod funkcję agregującą, co pozwala na warunkowe sumowanie kolumn (tzw. pivotowanie) bez konieczności pisania skomplikowanych instrukcji \sphinxcode{\sphinxupquote{CASE WHEN}}.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\subsection{Funkcje okna (Window Functions)}
+\label{\detokenize{rozdzial_5/index:funkcje-okna-window-functions}}
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{pg\_ranking\_klientow}}}
+{\sphinxparam{\DUrole{n}{conn}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Tworzy ranking najlepszych klientów na podstawie generowanych przychodów.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (psycopg).
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Lista krotek (Imię, Nazwisko, Przychód, Pozycja w rankingu).
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Opis techniczny:} Zapytanie korzysta z zaawansowanej funkcji analitycznej (okna) \sphinxcode{\sphinxupquote{RANK() OVER (ORDER BY SUM(kwota) DESC)}}, przypisując każdemu klientowi pozycję w rankingu całkowicie na poziomie silnika bazy.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\subsection{Natywna arytmetyka interwałów dat (INTERVAL)}
+\label{\detokenize{rozdzial_5/index:natywna-arytmetyka-interwalow-dat-interval}}
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{pg\_pobierz\_sredni\_czas\_wypozyczen}}}
+{\sphinxparam{\DUrole{n}{conn}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Oblicza średni czas wypożyczenia dla poszczególnych marek samochodów.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (psycopg).
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Lista krotek (Marka, średni czas w dniach).
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Opis techniczny:} Postgres natywnie obsługuje typ \sphinxcode{\sphinxupquote{INTERVAL}}. Wykorzystano odjęcie od siebie typów \sphinxcode{\sphinxupquote{DATE}} i przepuszczenie wyniku przez agregat \sphinxcode{\sphinxupquote{AVG()}}, a następnie zaokrąglenie do pełnych dni funkcją \sphinxcode{\sphinxupquote{EXTRACT(DAY FROM ...)}}.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\subsection{Wyrażenia tablicowe (CTE \sphinxhyphen{} WITH)}
+\label{\detokenize{rozdzial_5/index:wyrazenia-tablicowe-cte-with}}
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{pg\_klienci\_najdrozszych\_aut}}}
+{\sphinxparam{\DUrole{n}{conn}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Wyszukuje klientów korzystających z najdroższego segmentu aut wykorzystując CTE.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{conn}} \textendash{} Obiekt połączenia (psycopg).
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
@@ -3262,7 +3408,7 @@ Zbiór krotek (imię, nazwisko, email, telefon).
 \end{description}\end{quote}
 
 \sphinxAtStartPar
-\sphinxstylestrong{Opis techniczny:} Rdzeniem zapytania jest dynamiczne podzapytanie w klauzuli \sphinxcode{\sphinxupquote{WHERE}} określające maksymalną stawkę bazową: \sphinxcode{\sphinxupquote{(SELECT id\_kategorii FROM kategorie ORDER BY cena\_za\_dzien DESC LIMIT 1)}}. Zapewnia to odporność aplikacji na zmiany cenifikatora w tabeli kategorii.
+\sphinxstylestrong{Opis techniczny:} Logikę predykatu odseparowano za pomocą klauzuli \sphinxcode{\sphinxupquote{WITH}} (Common Table Expressions). Utworzono tymczasowy widok szukający najwyższej ceny, który następnie dołączono do głównego zapytania. Zwiększa to znacząco czytelność złożonego kodu SQL.
 
 \end{fulllineitems}\end{savenotes}
 
@@ -3271,27 +3417,143 @@ Zbiór krotek (imię, nazwisko, email, telefon).
 \section{Implementacja skryptowa}
 \label{\detokenize{rozdzial_5/index:implementacja-skryptowa}}
 \sphinxAtStartPar
-Wyżej zdefiniowane funkcje zostały spakietowane w postaci odizolowanego modułu Pythona, gotowego do wykonania lub podpięcia jako biblioteka analityczna w głównym kodzie aplikacji.
+Wszystkie wyżej opisane kwerendy zaimplementowano w języku Python. Funkcje prefiksowane są odpowiednio nazwami \sphinxcode{\sphinxupquote{sqlite\_}} oraz \sphinxcode{\sphinxupquote{pg\_}}.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{psycopg}
 \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{sqlite3}
 
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sprawdz\PYGZus{}historie\PYGZus{}aut}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+\PYG{c+c1}{\PYGZsh{} ==========================================}
+\PYG{c+c1}{\PYGZsh{} ZAPYTANIA SQLITE}
+\PYG{c+c1}{\PYGZsh{} ==========================================}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sqlite\PYGZus{}pobierz\PYGZus{}czas\PYGZus{}wypozyczen}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
     \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
     \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
-\PYG{l+s+s2}{        SELECT}
-\PYG{l+s+s2}{            s.marka,}
-\PYG{l+s+s2}{            s.model,}
-\PYG{l+s+s2}{            s.nr\PYGZus{}rejestracyjny,}
-\PYG{l+s+s2}{            w.data\PYGZus{}od}
+\PYG{l+s+s2}{        SELECT w.id\PYGZus{}wypozyczenia,}
+\PYG{l+s+s2}{               s.marka || }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{ }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{ || s.model AS auto,}
+\PYG{l+s+s2}{               CAST(julianday(w.data\PYGZus{}do) \PYGZhy{} julianday(w.data\PYGZus{}od) AS INTEGER) AS dni}
+\PYG{l+s+s2}{        FROM wypozyczenia w}
+\PYG{l+s+s2}{        JOIN samochody s ON w.id\PYGZus{}samochodu = s.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        WHERE w.status = }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{Zakonczone}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sqlite\PYGZus{}raport\PYGZus{}przychodow\PYGZus{}kategorii}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT k.nazwa, SUM(k.cena\PYGZus{}za\PYGZus{}dzien * CAST(julianday(w.data\PYGZus{}do) \PYGZhy{} julianday(w.data\PYGZus{}od) AS INTEGER))}
+\PYG{l+s+s2}{        FROM kategorie k}
+\PYG{l+s+s2}{        INNER JOIN samochody s ON k.id\PYGZus{}kategorii = s.id\PYGZus{}kategorii}
+\PYG{l+s+s2}{        INNER JOIN wypozyczenia w ON s.id\PYGZus{}samochodu = w.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        GROUP BY k.nazwa;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sqlite\PYGZus{}sprawdz\PYGZus{}historie\PYGZus{}aut}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT s.marka, s.model, w.data\PYGZus{}od}
 \PYG{l+s+s2}{        FROM samochody s}
 \PYG{l+s+s2}{        LEFT JOIN wypozyczenia w ON s.id\PYGZus{}samochodu = w.id\PYGZus{}samochodu;}
 \PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
     \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
-    \PYG{n}{wyniki} \PYG{o}{=} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
-    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
-    \PYG{k}{return} \PYG{n}{wyniki}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sqlite\PYGZus{}dostepne\PYGZus{}samochody}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT id\PYGZus{}samochodu FROM samochody}
+\PYG{l+s+s2}{        EXCEPT}
+\PYG{l+s+s2}{        SELECT id\PYGZus{}samochodu FROM wypozyczenia WHERE status = }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{W trakcie}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{sqlite\PYGZus{}wyposazenie\PYGZus{}floty}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT s.id\PYGZus{}samochodu, GROUP\PYGZus{}CONCAT(w.nazwa\PYGZus{}wyposazenia, }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{, }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{)}
+\PYG{l+s+s2}{        FROM samochody s}
+\PYG{l+s+s2}{        LEFT JOIN wyposazenie\PYGZus{}aut wa ON s.id\PYGZus{}samochodu = wa.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        LEFT JOIN wyposazenie w ON wa.id\PYGZus{}wyposazenia = w.id\PYGZus{}wyposazenia}
+\PYG{l+s+s2}{        GROUP BY s.id\PYGZus{}samochodu;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} ==========================================}
+\PYG{c+c1}{\PYGZsh{} ZAPYTANIA POSTGRESQL}
+\PYG{c+c1}{\PYGZsh{} ==========================================}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{pg\PYGZus{}lista\PYGZus{}klientow\PYGZus{}aut}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT s.nr\PYGZus{}rejestracyjny,}
+\PYG{l+s+s2}{               STRING\PYGZus{}AGG(kl.imie || }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{ }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{ || kl.nazwisko, }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{, }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{ ORDER BY w.data\PYGZus{}od DESC) as klienci}
+\PYG{l+s+s2}{        FROM samochody s}
+\PYG{l+s+s2}{        JOIN wypozyczenia w ON s.id\PYGZus{}samochodu = w.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        JOIN klienci kl ON w.id\PYGZus{}klienta = kl.id\PYGZus{}klienta}
+\PYG{l+s+s2}{        GROUP BY s.nr\PYGZus{}rejestracyjny;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{pg\PYGZus{}analiza\PYGZus{}przychodow\PYGZus{}selektywna}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT k.nazwa,}
+\PYG{l+s+s2}{               SUM(w.kwota\PYGZus{}calkowita) FILTER (WHERE w.status\PYGZus{}platnosci = }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{Oplacone}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{) as oplacone,}
+\PYG{l+s+s2}{               SUM(w.kwota\PYGZus{}calkowita) FILTER (WHERE w.status\PYGZus{}platnosci = }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{Zalegle}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{) as zalegle}
+\PYG{l+s+s2}{        FROM kategorie k}
+\PYG{l+s+s2}{        JOIN samochody s ON k.id\PYGZus{}kategorii = s.id\PYGZus{}kategorii}
+\PYG{l+s+s2}{        JOIN wypozyczenia w ON s.id\PYGZus{}samochodu = w.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        GROUP BY k.nazwa;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{pg\PYGZus{}ranking\PYGZus{}klientow}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT kl.imie, kl.nazwisko, SUM(w.kwota\PYGZus{}calkowita) as suma\PYGZus{}wydatkow,}
+\PYG{l+s+s2}{               RANK() OVER (ORDER BY SUM(w.kwota\PYGZus{}calkowita) DESC) as pozycja\PYGZus{}w\PYGZus{}rankingu}
+\PYG{l+s+s2}{        FROM klienci kl}
+\PYG{l+s+s2}{        JOIN wypozyczenia w ON kl.id\PYGZus{}klienta = w.id\PYGZus{}klienta}
+\PYG{l+s+s2}{        GROUP BY kl.id\PYGZus{}klienta, kl.imie, kl.nazwisko;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{pg\PYGZus{}pobierz\PYGZus{}sredni\PYGZus{}czas\PYGZus{}wypozyczen}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        SELECT s.marka,}
+\PYG{l+s+s2}{               EXTRACT(DAY FROM AVG(w.data\PYGZus{}do \PYGZhy{} w.data\PYGZus{}od)) as sredni\PYGZus{}czas\PYGZus{}dni}
+\PYG{l+s+s2}{        FROM wypozyczenia w}
+\PYG{l+s+s2}{        JOIN samochody s ON w.id\PYGZus{}samochodu = s.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        WHERE w.status = }\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{Zakonczone}\PYG{l+s+s2}{\PYGZsq{}}
+\PYG{l+s+s2}{        GROUP BY s.marka;}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{pg\PYGZus{}klienci\PYGZus{}najdrozszych\PYGZus{}aut}\PYG{p}{(}\PYG{n}{conn}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cursor} \PYG{o}{=} \PYG{n}{conn}\PYG{o}{.}\PYG{n}{cursor}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{query} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+s2}{        WITH NajdrozszaKategoria AS (}
+\PYG{l+s+s2}{            SELECT id\PYGZus{}kategorii FROM kategorie ORDER BY cena\PYGZus{}za\PYGZus{}dzien DESC LIMIT 1}
+\PYG{l+s+s2}{        )}
+\PYG{l+s+s2}{        SELECT DISTINCT kl.imie, kl.nazwisko, kl.email, kl.telefon}
+\PYG{l+s+s2}{        FROM klienci kl}
+\PYG{l+s+s2}{        JOIN wypozyczenia w ON kl.id\PYGZus{}klienta = w.id\PYGZus{}klienta}
+\PYG{l+s+s2}{        JOIN samochody s ON w.id\PYGZus{}samochodu = s.id\PYGZus{}samochodu}
+\PYG{l+s+s2}{        WHERE s.id\PYGZus{}kategorii = (SELECT id\PYGZus{}kategorii FROM NajdrozszaKategoria);}
+\PYG{l+s+s2}{    }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{query}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{cursor}\PYG{o}{.}\PYG{n}{fetchall}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 
